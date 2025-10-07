@@ -1,0 +1,1 @@
+to reset env vars: source .env
