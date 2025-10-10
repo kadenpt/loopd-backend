@@ -8,8 +8,16 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, index=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(120), nullable=False)  
 
     posts: Mapped[list["Post"]] = relationship("Post", back_populates="owner", cascade="all, delete-orphan")
+
+    followers: Mapped[list["Follow"]] = relationship(
+        "Follow", foreign_keys="Follow.followed_id", back_populates="followed"
+    )
+    following: Mapped[list["Follow"]] = relationship(
+        "Follow", foreign_keys="Follow.follower_id", back_populates="follower"
+    )
 
 
 class Post(Base):
@@ -22,3 +30,12 @@ class Post(Base):
 
     owner: Mapped["User"] = relationship("User", back_populates="posts")
 
+class Follow(Base):
+    __tablename__ = "follows"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    follower_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    followed_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+
+    follower: Mapped["User"] = relationship("User", foreign_keys=[follower_id], back_populates="following")
+    followed: Mapped["User"] = relationship("User", foreign_keys=[followed_id], back_populates="followers")

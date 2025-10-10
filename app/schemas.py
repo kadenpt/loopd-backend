@@ -28,3 +28,15 @@ class Post(PostBase):
     class Config:
         orm_mode = True
 
+class Follow(BaseModel):
+    follower_id: int
+    followed_id: int
+
+class FollowCreate(Follow):
+    pass
+
+class FollowResponse(Follow):
+    id: int
+
+    class Config:
+        from_attributes = True
