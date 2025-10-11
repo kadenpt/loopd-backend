@@ -40,3 +40,17 @@ class FollowResponse(Follow):
 
     class Config:
         from_attributes = True
+
+class Like(BaseModel):
+    user_id: int
+    post_id: int
+
+    class Config:
+        from_attributes = True
+
+class LikeCreate(Like):
+    pass
+
+class LikeResponse(Like):
+    id: int
+    

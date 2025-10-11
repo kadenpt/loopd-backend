@@ -18,7 +18,7 @@ class User(Base):
     following: Mapped[list["Follow"]] = relationship(
         "Follow", foreign_keys="Follow.follower_id", back_populates="follower"
     )
-
+    likes: Mapped[list["Like"]] = relationship("Like", back_populates="user", cascade="all, delete-orphan")
 
 class Post(Base):
     __tablename__ = "posts"
@@ -29,6 +29,7 @@ class Post(Base):
     photo_url: Mapped[str] = mapped_column(String, nullable=False)
 
     owner: Mapped["User"] = relationship("User", back_populates="posts")
+    likes: Mapped[list["Like"]] = relationship("Like", back_populates="post", cascade="all, delete-orphan")
 
 class Follow(Base):
     __tablename__ = "follows"
@@ -39,3 +40,13 @@ class Follow(Base):
 
     follower: Mapped["User"] = relationship("User", foreign_keys=[follower_id], back_populates="following")
     followed: Mapped["User"] = relationship("User", foreign_keys=[followed_id], back_populates="followers")
+
+class Like(Base):
+    __tablename__ = "likes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), nullable=False)
+
+    user: Mapped["User"] = relationship("User", back_populates="likes")
+    post: Mapped["Post"] = relationship("Post", back_populates="likes")

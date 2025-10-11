@@ -1,7 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.models import Follow
-from app.schemas import FollowCreate
 
 def create_follow(db: Session, follower_id: int, followed_id: int):
     if follower_id == followed_id:
